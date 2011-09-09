@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'Date'
-require 'pp'
 
 def find_smallest_date(dates)
 	lowest = dates[0]
@@ -14,24 +13,27 @@ def find_smallest_date(dates)
 end
 
 def bestbefore(str)
-	a = str.split("/")
-	a = a.map { |num| num.to_i }
+	a = str.split("/").map { |num| num.to_i }
 
-	result = Array.new
+	results = Array.new
 
-	a.permutation { |date|
-		if Date.valid_civil?(date[2], date[1], date[0])
-			result.push(date)
+	a.permutation { |perm|
+		begin
+			date = Date.civil(perm[2] < 2000 ? perm[2] + 2000 : perm[2], perm[1], perm[0])
+			results.push(date)
+		rescue ArgumentError
+			#Do nothing
 		end
 	}
 
-	if result.length == 0
-		return "Date is illegal"
+	if results.length == 0
+		 puts str[0...-1] + " is illegal"
+		 return
 	end
 
-	return find_smallest_date(result)
+	puts find_smallest_date(results).strftime("%Y-%m-%d")
 end
 
 IO.foreach(ARGV[0]) { |line|
-	puts PP.pp(bestbefore(line))
+	bestbefore(line)
 }
