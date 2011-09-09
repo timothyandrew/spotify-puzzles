@@ -34,20 +34,20 @@ total = C(m,n)
 need_wins = (p.to_f / t.to_f).ceil
 
 
-# A failure is a case where the number of required wins is not reached.
-# That is, the number of wins is < need_wins
+# A success is a case where the number of wins is >= the no. of required wins
 #
-# Each of these cases (i = 0..need_wins) is represents a number of
-# failures. We must calculate how many failures exactly.
+# Each of these cases (i = need_wins..n) is represents a number of
+# successes. We must calculate how many successes exactly.
 #
 # We compose the set of n winners in two partitions:
-#		The first being i (i < need_wins) members of our group (p)
-#		The second being the rest (m-p) of the participants
-failure = 0
-for i in 0...need_wins
-	failure += C(p,i) * C(m-p, n-i)
+#		For the first, we choose i winners from our group (p).
+#		For the second, we choose (n-i) winners from the rest of the entrants (m-p). 
+#
+#	This gives us the total number of ways of composing this list for the given i.
+success = 0
+for i in need_wins..n
+	success += C(p,i) * C(m-p, n-i)
 end
 
-
-#Probability of Success == 1 - (Probability of Failure)
-puts 1 - (failure.to_f/total)
+#Probability of Success = No. of successes / Total tries
+puts (success.to_f/total)
